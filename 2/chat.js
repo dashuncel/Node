@@ -12,11 +12,14 @@ class ChatApp extends EventEmitter {
     // Посылать каждую секунду сообщение
     setInterval(() => {
       this.emit('message', `${this.title}: ping-pong`);
-  }, 1000);
+    }, 1000);
   }
 
   close() {
-    this.emit('close', `${this.title}: close`);
+    console.log(`Чат ${this.title} закрылся :('`)
+    this.removeAllListeners('message', () => {
+      console.log(`Чат ${this.title} закрылся :('`)
+    });
   }
 }
 
@@ -28,8 +31,8 @@ let chatOnMessage = (message) => {
   console.log(message);
 };
 
-let readyToAns = () => {
-  console.log('Готовлюсь к ответу');
+let readyToAns = (message) => {
+  console.log(message.split(':')[0], ': готовлюсь к ответу');
 };
 
 webinarChat.on('message', chatOnMessage);
@@ -40,7 +43,7 @@ facebookChat.on('message', chatOnMessage);
 vkChat.on('message', chatOnMessage);
 vkChat.on('message', readyToAns);
 vkChat.setMaxListeners(2);
-
+vkChat.close();
 
 // Закрыть вконтакте
 setTimeout( ()=> {
